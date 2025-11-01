@@ -1,6 +1,26 @@
 name: Build ipk for HomeProxy
 
 on:
+  # 添加手动触发
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: '选择要构建的分支'
+        required: true
+        default: 'master'
+        type: choice
+        options:
+        - master
+        - dev
+      build_type:
+        description: '构建类型'
+        required: true  
+        default: 'normal'
+        type: choice
+        options:
+        - normal
+        - clean
+
   push:
     branches:
       - 'master'
@@ -39,6 +59,9 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v5
+        with:
+          # 添加分支选择逻辑
+          ref: ${{ github.event.inputs.branch || github.ref }}
 
       - name: Checkout apk
         uses: actions/checkout@v5
